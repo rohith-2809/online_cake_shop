@@ -5,93 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Quiz Game</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: Arial, sans-serif;
+            animation: fadeIn 1s ease-in-out;
         }
 
         .container {
             margin-top: 50px;
-            transition: transform 0.3s ease-in-out;
         }
 
-        #selection-page {
+        #selection-page, #results, .quiz-card {
             background-color: #ffffff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease-in-out;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        #selection-page:hover {
-            box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .quiz-card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-
-        .quiz-card:hover {
-            transform: scale(1.05);
+        #selection-page:hover, #results:hover, .quiz-card:hover {
+            transform: translateY(-10px);
             box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
         }
 
-        #submitBtn {
+        #submitBtn, .help-btn {
             margin-top: 20px;
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
-        #results {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
+        #submitBtn:hover, .help-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
         }
 
-        #results.show {
-            display: block;
-            opacity: 1;
+        .help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 50%;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
         }
 
         h1 {
             color: #343a40;
-            transition: color 0.3s ease-in-out;
+            animation: slideIn 1s ease-in-out;
         }
 
         h3 {
             color: #343a40;
-            transition: color 0.3s ease-in-out;
         }
 
         label {
             color: #343a40;
-            transition: color 0.3s ease-in-out;
         }
 
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #0056b3;
+            transform: scale(1.05);
         }
 
         .form-control {
             border-color: #ced4da;
-            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-control:focus {
@@ -105,27 +94,15 @@
 
         .card-body {
             padding: 20px;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .card-body:hover {
-            background-color: #f1f1f1;
         }
 
         .form-check-label {
             color: #6c757d;
-            transition: color 0.3s ease-in-out;
-        }
-
-        .form-check-input:checked + .form-check-label {
-            color: #343a40;
-            font-weight: bold;
         }
 
         .btn-submit {
             background-color: #28a745;
             border-color: #28a745;
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
         }
 
         .btn-submit:hover {
@@ -133,21 +110,21 @@
             border-color: #218838;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                margin-top: 20px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-
-            #selection-page {
-                padding: 20px;
+            to {
+                opacity: 1;
             }
+        }
 
-            .quiz-card {
-                margin-bottom: 15px;
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
             }
-
-            .card-body {
-                padding: 15px;
+            to {
+                transform: translateX(0);
             }
         }
     </style>
@@ -192,8 +169,10 @@
             <!-- Results will be inserted here -->
         </div>
     </div>
+    <button class="help-btn">?</button>
 
     <script>
+        // Sample quiz data
         const quizData = {
             educational: [
                 {
@@ -205,6 +184,46 @@
                     question: "Which planet is known as the Red Planet?",
                     options: ["Earth", "Mars", "Venus", "Jupiter"],
                     answer: "Mars"
+                },
+                {
+                    question: "What is the largest ocean on Earth?",
+                    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                    answer: "Pacific Ocean"
+                },
+                {
+                    question: "Who developed the theory of relativity?",
+                    options: ["Isaac Newton", "Galileo Galilei", "Albert Einstein", "Niels Bohr"],
+                    answer: "Albert Einstein"
+                },
+                {
+                    question: "What is the smallest unit of life?",
+                    options: ["Cell", "Atom", "Molecule", "Organ"],
+                    answer: "Cell"
+                },
+                {
+                    question: "Which element has the chemical symbol 'O'?",
+                    options: ["Gold", "Oxygen", "Silver", "Iron"],
+                    answer: "Oxygen"
+                },
+                {
+                    question: "How many continents are there on Earth?",
+                    options: ["5", "6", "7", "8"],
+                    answer: "7"
+                },
+                {
+                    question: "What is the powerhouse of the cell?",
+                    options: ["Nucleus", "Mitochondria", "Ribosome", "Chloroplast"],
+                    answer: "Mitochondria"
+                },
+                {
+                    question: "Who is known as the father of modern physics?",
+                    options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Marie Curie"],
+                    answer: "Albert Einstein"
+                },
+                {
+                    question: "What is the boiling point of water at sea level?",
+                    options: ["90°C", "95°C", "100°C", "105°C"],
+                    answer: "100°C"
                 }
             ],
             cricket: [
@@ -217,6 +236,46 @@
                     question: "Which country won the ICC Cricket World Cup in 2019?",
                     options: ["India", "Australia", "England", "New Zealand"],
                     answer: "England"
+                },
+                {
+                    question: "Who has the most wickets in Test cricket?",
+                    options: ["Shane Warne", "Muttiah Muralitharan", "Anil Kumble", "James Anderson"],
+                    answer: "Muttiah Muralitharan"
+                },
+                {
+                    question: "Which cricketer is known as 'The Wall'?",
+                    options: ["Rahul Dravid", "Sachin Tendulkar", "Ricky Ponting", "Brian Lara"],
+                    answer: "Rahul Dravid"
+                },
+                {
+                    question: "Who has scored the most runs in a single ODI inning?",
+                    options: ["Rohit Sharma", "Chris Gayle", "Virender Sehwag", "Martin Guptill"],
+                    answer: "Rohit Sharma"
+                },
+                {
+                    question: "Which team has won the most IPL titles?",
+                    options: ["Chennai Super Kings", "Mumbai Indians", "Kolkata Knight Riders", "Royal Challengers Bangalore"],
+                    answer: "Mumbai Indians"
+                },
+                {
+                    question: "Who is the current captain of the Indian cricket team (as of 2023)?",
+                    options: ["Virat Kohli", "Rohit Sharma", "MS Dhoni", "KL Rahul"],
+                    answer: "Rohit Sharma"
+                },
+                {
+                    question: "Which cricketer is known for the 'helicopter shot'?",
+                    options: ["MS Dhoni", "AB de Villiers", "Virat Kohli", "Chris Gayle"],
+                    answer: "MS Dhoni"
+                },
+                {
+                    question: "Who was the first player to score 10,000 runs in ODI cricket?",
+                    options: ["Sachin Tendulkar", "Brian Lara", "Sunil Gavaskar", "Viv Richards"],
+                    answer: "Sachin Tendulkar"
+                },
+                {
+                    question: "Which country is known as the 'Proteas' in cricket?",
+                    options: ["Australia", "England", "South Africa", "New Zealand"],
+                    answer: "South Africa"
                 }
             ],
             generalKnowledge: [
@@ -229,6 +288,46 @@
                     question: "Which planet is the largest in our solar system?",
                     options: ["Mars", "Jupiter", "Saturn", "Earth"],
                     answer: "Jupiter"
+                },
+                {
+                    question: "Who painted the Mona Lisa?",
+                    options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                    answer: "Leonardo da Vinci"
+                },
+                {
+                    question: "What is the tallest mountain in the world?",
+                    options: ["K2", "Kangchenjunga", "Mount Everest", "Lhotse"],
+                    answer: "Mount Everest"
+                },
+                {
+                    question: "Who was the first President of the United States?",
+                    options: ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "John Adams"],
+                    answer: "George Washington"
+                },
+                {
+                    question: "What is the smallest country in the world?",
+                    options: ["Monaco", "Nauru", "San Marino", "Vatican City"],
+                    answer: "Vatican City"
+                },
+                {
+                    question: "Which element has the atomic number 1?",
+                    options: ["Helium", "Oxygen", "Hydrogen", "Nitrogen"],
+                    answer: "Hydrogen"
+                },
+                {
+                    question: "What is the capital city of Australia?",
+                    options: ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+                    answer: "Canberra"
+                },
+                {
+                    question: "Which language is the most spoken worldwide?",
+                    options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
+                    answer: "Mandarin Chinese"
+                },
+                {
+                    question: "Who discovered penicillin?",
+                    options: ["Marie Curie", "Alexander Fleming", "Louis Pasteur", "Gregor Mendel"],
+                    answer: "Alexander Fleming"
                 }
             ]
         };
@@ -236,9 +335,10 @@
         let selectedCategory;
         let selectedNumberOfQuestions;
 
+        // Function to render quiz questions
         function renderQuiz(category, numberOfQuestions) {
             const quizContainer = document.getElementById("quiz-container");
-            quizContainer.innerHTML = "";
+            quizContainer.innerHTML = ""; // Clear previous quiz content
             quizData[category].slice(0, +numberOfQuestions).forEach((quiz, index) => {
                 const questionElement = `
                     <div class="card my-3 quiz-card">
@@ -256,37 +356,49 @@
                 `;
                 quizContainer.innerHTML += questionElement;
             });
-            quizContainer.style.display = "block";
-            document.getElementById("submitBtn").style.display = "block";
+            quizContainer.style.display = "block"; // Show quiz container
+            document.getElementById("submitBtn").style.display = "block"; // Show submit button
         }
 
+        // Event listener for form submission
         document.getElementById("selection-form").addEventListener("submit", function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission behavior
             selectedCategory = document.getElementById("quizCategory").value;
             selectedNumberOfQuestions = document.getElementById("numberOfQuestions").value;
             renderQuiz(selectedCategory, selectedNumberOfQuestions);
         });
 
+        // Event listener for submit button
         document.getElementById("submitBtn").addEventListener("click", function() {
             const quizContainer = document.getElementById("quiz-container");
-            const radios = quizContainer.querySelectorAll('input[type="radio"]');
+            const resultsContainer = document.getElementById("results");
             let score = 0;
-            radios.forEach((radio, index) => {
-                const questionIndex = radio.name.replace('answer', '');
-                const answer = quizData[selectedCategory][questionIndex].answer;
-                if (radio.checked && radio.value === answer) {
+            quizData[selectedCategory].slice(0, +selectedNumberOfQuestions).forEach((quiz, index) => {
+                const selectedOption = quizContainer.querySelector(`input[name="answer${index}"]:checked`);
+                if (selectedOption && selectedOption.value === quiz.answer) {
                     score++;
+                    const correctAnswer = document.createElement('span');
+                    correctAnswer.classList.add('text-success');
+                    correctAnswer.innerHTML = ` Correct`;
+                    selectedOption.nextElementSibling.appendChild(correctAnswer);
+                } else if (selectedOption) {
+                    const wrongAnswer = document.createElement('span');
+                    wrongAnswer.classList.add('text-danger');
+                    wrongAnswer.innerHTML = ` Wrong`;
+                    selectedOption.nextElementSibling.appendChild(wrongAnswer);
+
+                    const correctAnswer = document.createElement('span');
+                    correctAnswer.classList.add('text-success');
+                    correctAnswer.innerHTML = ` (Correct Answer: ${quiz.answer})`;
+                    const correctOptionLabel = quizContainer.querySelector(`input[name="answer${index}"][value="${quiz.answer}"]`).nextElementSibling;
+                    correctOptionLabel.parentElement.appendChild(correctAnswer);
                 }
-                const correctAnswer = document.createElement('span');
-                correctAnswer.classList.add('text-success');
-                correctAnswer.innerHTML = ` (Correct Answer: ${answer})`;
-                quizContainer.querySelectorAll('.form-check')[index].appendChild(correctAnswer);
             });
 
-            const resultsContainer = document.getElementById("results");
+            // Display score
             resultsContainer.innerHTML = `<h3>Quiz Results</h3><p>Your score: ${score}/${selectedNumberOfQuestions}</p>`;
-            resultsContainer.classList.add('show');
-            document.getElementById("submitBtn").style.display = "none";
+            resultsContainer.style.display = "block"; // Show results
+            document.getElementById("submitBtn").style.display = "none"; // Hide submit button
         });
     </script>
 </body>
